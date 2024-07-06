@@ -2,57 +2,73 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
-    private EditText usernameInput;
-    private EditText passwordInput;
-    private Button loginBtn;
+public class MainActivity extends AppCompatActivity {
+    EditText editTextUsername, editTextPassword;
+    Button logIn;
+    TextView signUp;
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize the TextView for sign-up
-        TextView signUpTextView = findViewById(R.id.signup_textview);
-        signUpTextView.setOnClickListener(v -> {
+        // Initialize views
+        editTextUsername = findViewById(R.id.username_input);
+        editTextPassword = findViewById(R.id.password_input);
+        logIn = findViewById(R.id.login_btn);
+        signUp = findViewById(R.id.signup_textview);
+
+        // Set up the sign-up click listener
+        signUp.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
             startActivity(intent);
+            finish();
         });
 
-        // Initialize the views
-        usernameInput = findViewById(R.id.username_input);
-        passwordInput = findViewById(R.id.password_input);
-        loginBtn = findViewById(R.id.login_btn);
+        // Set up the login click listener
+        logIn.setOnClickListener(v -> {
+            String username = String.valueOf(editTextUsername.getText());
+            String password = String.valueOf(editTextPassword.getText());
 
-        loginBtn.setOnClickListener(v -> {
-            String username = usernameInput.getText().toString();
-            String password = passwordInput.getText().toString();
-
-            if ("admin".equals(username) && "123456".equals(password)) {
-                // Successful login
-                Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                Log.i("Login Status", "Login successful");
-
-                // Intent to switch to HomeActivity
-                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                intent.putExtra("USERNAME", username);
-                startActivity(intent);
-
-            } else {
-                // Failed login
-                Toast.makeText(MainActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
-                Log.i("Login Status", "Invalid credentials");
+            if (TextUtils.isEmpty(username)) {
+                Toast.makeText(MainActivity.this, "Enter Username", Toast.LENGTH_SHORT).show();
+                return;
             }
+            if (TextUtils.isEmpty(password)) {
+                Toast.makeText(MainActivity.this, "Enter Password", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            firebaseAuth.signInWithEmailAndPassword(username, password)
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(MainActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
         });
     }
-
-
 }
