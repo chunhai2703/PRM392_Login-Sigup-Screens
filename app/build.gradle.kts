@@ -39,7 +39,14 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
+    implementation(libs.recycler)
+    implementation(libs.gson)
+    implementation(libs.retrofit)
+    implementation(libs.converterGson)
+    implementation(libs.firebase.database)
+    implementation("com.google.gms:google-services:4.4.2")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
 }
