@@ -43,54 +43,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         EdgeToEdge.enable(this);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        database.getReference().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Connection successful, you can perform operations with the database here
-                displaySuccessMessage("Connection successful!");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Connection failed, you can handle the error here
-                String errorMessage = databaseError.getMessage();
-                displayFailureMessage("Connection failed: " + errorMessage);
-            }
-        });
-
-        DatabaseReference myRef = database.getReference("product");
-
-        myRef.child("abc").setValue("demo")
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Kết nối thành công
-                        Log.d("Firebase", "Data set successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Xử lý lỗi
-                        Log.e("Firebase", "Failed to set data", e);
-                    }
-                })
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("Firebase", "Data set successfully - OnComplete");
-                        } else {
-                            Log.e("Firebase", "Failed to set data - OnComplete", task.getException());
-                        }
-                    }
-                });
-
-
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -99,9 +52,16 @@ public class HomeActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<ProductEntity> courseList = generateDummyCourseList();
-        ProductAdapter adapter = new ProductAdapter(courseList);
-        recyclerView.setAdapter(adapter);
+        // Load data and set adapter after data is fetched
+        loadData(new OnDataLoadedListener() {
+            @Override
+            public void onDataLoaded(List<ProductEntity> list) {
+                ProductAdapter adapter = new ProductAdapter(list);
+                recyclerView.setAdapter(adapter);
+            }
+        });
+
+
     }
     private void displaySuccessMessage(String message) {
         // Use a UI framework like Android's Toast or a custom dialog to display the success message
@@ -112,16 +72,35 @@ public class HomeActivity extends AppCompatActivity {
         // Use a UI framework like Android's Toast or a custom dialog to display the failure message
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
-    private List<ProductEntity> generateDummyCourseList() {
-        List<ProductEntity> courses = new ArrayList<>();
-        courses.add(new ProductEntity("C#", "abc", 123,12,"abc",2345,"123","abc"));
-        courses.add(new ProductEntity("C#3", "abc", 123,12,"abc",2345,"123","abc"));
-        courses.add(new ProductEntity("C4#", "abc", 123,12,"abc",2345,"123","abc"));
-        courses.add(new ProductEntity("C6#", "abc", 123,12,"abc",2345,"123","abc"));
-        courses.add(new ProductEntity("C7#", "abc", 123,12,"abc",2345,"123","abc"));
-        courses.add(new ProductEntity("C8#", "abc", 123,12,"abc",2345,"123","abc"));
 
-        return courses;
+    private void loadData(OnDataLoadedListener listener) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://books-app-bdc4b-default-rtdb.asia-southeast1.firebasedatabase.app");
+        DatabaseReference myRef = database.getReference("product");
+        List<ProductEntity> listData = new ArrayList<>();
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        // Access individual products
+                        String productName = snapshot.child("name").getValue(String.class);
+                        double productPrice = snapshot.child("price").getValue(double.class);
+                        String image = snapshot.child("image").getValue(String.class);
+                        listData.add(new ProductEntity(productName, "abc", productPrice, 12, "abc", 2345, "123", image));
+                    }
+                    listener.onDataLoaded(listData);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                displayFailureMessage(error.getMessage());
+            }
+        });
+    }
+    interface OnDataLoadedListener {
+        void onDataLoaded(List<ProductEntity> courseList);
     }
     @Override
     protected void onRestart() {
