@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:hint="Email or Phone Number"
+            android:hint="Email"
             android:backgroundTint="#F6F6F7"
             android:textColor="#828382"
             android:textColorHint="#828382"
