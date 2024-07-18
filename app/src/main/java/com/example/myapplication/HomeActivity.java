@@ -85,9 +85,8 @@ public class HomeActivity extends AppCompatActivity {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         // Access individual products
                         String productName = snapshot.child("name").getValue(String.class);
-                        double productPrice = snapshot.child("price").getValue(double.class);
                         String image = snapshot.child("image").getValue(String.class);
-                        listData.add(new ProductEntity(productName, "abc", productPrice, 12, "abc", 2345, "123", image));
+                        listData.add(new ProductEntity(productName, "abc", 123, 12, "abc", 2345, "123", image));
                     }
                     listener.onDataLoaded(listData);
                 }
