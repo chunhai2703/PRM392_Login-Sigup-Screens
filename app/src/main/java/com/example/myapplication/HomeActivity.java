@@ -86,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
                         // Access individual products
                         String productName = snapshot.child("name").getValue(String.class);
                         String image = snapshot.child("image").getValue(String.class);
-                        listData.add(new ProductEntity(productName, "abc", 123, 12, "abc", 2345, "123", image));
+                        listData.add(new ProductEntity(productName, "abc", 123, 12, "abc", 2345, "123", "https://cdn0.fahasa.com/media/catalog/product/9/9/999-l_-th_-g_i-cho-ch_nh-m_nh-_-t_-m_u-cu_c-s_ng.jpg"));
                     }
                     listener.onDataLoaded(listData);
                 }
