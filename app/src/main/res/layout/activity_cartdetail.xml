@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.cartDetail.CartDetailActivity">
+    >
 
 
     <TextView
@@ -25,50 +25,33 @@
     <LinearLayout
         android:id="@+id/layoutofcartdetail"
         android:layout_width="match_parent"
-        app:layout_constraintBottom_toTopOf="@id/payment_button_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView"
         android:layout_height="540dp"
         android:layout_margin="20dp"
         android:layout_marginTop="100dp"
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView">
 
         <ListView
-            android:scrollbars="vertical"
-            android:layout_height="match_parent"
-            android:dividerHeight="5dp"
-            android:divider="@color/black"
             android:id="@+id/horizontal_recycler_view_cart_detail"
             android:layout_width="match_parent"
-
-
+            android:layout_height="match_parent"
+            android:divider="@color/black"
+            android:dividerHeight="5dp"
+            android:scrollbars="vertical"
             tools:listitem="@layout/rvcart_item" />
     </LinearLayout>
 
-
-
-<!--    <ListView-->
-<!--        android:id="@+id/horizontal_recycler_view_cart_detail"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="540dp"-->
-<!--        android:layout_margin="20dp"-->
-<!--        android:gravity="center"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/textView" />-->
-
-
-    <com.paypal.checkout.paymentbutton.PaymentButtonContainer
+    <Button
         android:id="@+id/payment_button_container"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/layoutofcartdetail"
-        app:paypal_button_color="blue"
-        app:paypal_button_enabled="true"
-        app:paypal_button_label="pay"
-        app:paypal_button_shape="rectangle"
-        app:paypal_button_size="large" />
-
+        android:layout_marginTop="42dp"
+        android:text="Mua"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutofcartdetail" />
 
 
 
