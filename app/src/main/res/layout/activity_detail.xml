@@ -8,13 +8,13 @@
 
     <ImageView
         android:id="@+id/productImage"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="421dp"
+        android:layout_height="312dp"
         app:layout_constraintBottom_toTopOf="@+id/productName"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintDimensionRatio="1" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/productName"
@@ -40,5 +40,16 @@
         android:textSize="20sp"
         android:layout_marginTop="8dp"
         android:padding="16dp" />
+
+    <Button
+        android:id="@+id/addToCartButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="196dp"
+        android:text="Thêm vào giỏ hàng"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/productPrice" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
