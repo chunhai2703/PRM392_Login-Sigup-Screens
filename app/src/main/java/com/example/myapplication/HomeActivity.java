@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,10 +47,29 @@ public class HomeActivity extends AppCompatActivity {
     private List<ProductEntity> listItem = new ArrayList<>();
     private ProductAdapter adapter;
 
+    Button logoutBtn;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        mAuth = FirebaseAuth.getInstance();
+        // Initialize views
+        logoutBtn = findViewById(R.id.logout_btn);
+
+        // Set up the logout click listener
+        logoutBtn.setOnClickListener(v -> {
+            Log.d("Logout", "Logout button clicked");
+            mAuth.signOut();
+            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+
         EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
