@@ -123,7 +123,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Log.v("TAG", snapshot.toString());
                         String productName = snapshot.child("Name").getValue(String.class);
                         String image = snapshot.child("UrlImage").getValue(String.class);
                         if(image == null){
@@ -136,8 +135,13 @@ public class HomeActivity extends AppCompatActivity {
                         }else{
                             valuePrice = Double.parseDouble(price);
                         }
+                        String des = snapshot.child("Description").getValue(String.class);
+                        int number = snapshot.child("Quantity").getValue(Integer.class);
+                        String brand = snapshot.child("Brand").getValue(String.class);
 
-                        listData.add(new ProductEntity(productName, "abc", valuePrice, 12, "abc", 2345, "123", image));
+                        int yearOfManufacture = snapshot.child("YearOfManufacture").getValue(Integer.class);
+
+                        listData.add(new ProductEntity(productName, des, valuePrice, number, brand, yearOfManufacture, "123", image));
                     }
                     listener.onDataLoaded(listData);
                 }
