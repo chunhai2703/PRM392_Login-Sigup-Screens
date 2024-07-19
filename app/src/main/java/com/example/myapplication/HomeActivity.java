@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -42,6 +43,8 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ApiService apiService;
     private TextView viewCartButton;
+    private List<ProductEntity> listItem = new ArrayList<>();
+    private ProductAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +56,14 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Load data and set adapter after data is fetched
         loadData(new OnDataLoadedListener() {
             @Override
             public void onDataLoaded(List<ProductEntity> list) {
-                ProductAdapter adapter = new ProductAdapter(list,HomeActivity.this);
+                listItem.clear();
+                listItem = list;
+                adapter = new ProductAdapter(list,HomeActivity.this);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -74,6 +76,32 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        SearchView searchView = findViewById(R.id.search_view);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.v("TAGC", query);
+                filterList(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.v("TAGC", newText);
+                filterList(newText);
+                return true;
+            }
+        });
+    }
+    private void filterList(String query) {
+        List<ProductEntity> filteredList = new ArrayList<>();
+        for (ProductEntity product : listItem) {
+            if (product.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(product);
+            }
+        }
+        adapter.updateList(filteredList);
     }
     private void displaySuccessMessage(String message) {
         // Use a UI framework like Android's Toast or a custom dialog to display the success message

@@ -31,7 +31,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         this.productList = courseList;
         this.context = context;
     }
-
+    public void updateList(List<ProductEntity> newList) {
+        productList = newList;
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public ProductAdapter.ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
