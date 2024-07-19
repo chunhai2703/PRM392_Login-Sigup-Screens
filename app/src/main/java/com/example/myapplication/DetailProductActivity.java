@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +26,8 @@ import java.util.List;
 public class DetailProductActivity extends AppCompatActivity {
     private TextView productNameTextView, productPriceTextView;
     private ImageView productImageView;
-
+    private TextView quantityText;
+    private int quantity = 1;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,5 +55,27 @@ public class DetailProductActivity extends AppCompatActivity {
                 .placeholder(R.drawable.error_image) // optional placeholder
                 .error(R.drawable.error_image) // optional error image
                 .into(productImageView);
+
+        quantityText = findViewById(R.id.quantityText);
+        Button decreaseButton = findViewById(R.id.decreaseButton);
+        Button increaseButton = findViewById(R.id.increaseButton);
+
+        decreaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (quantity > 1) {
+                    quantity--;
+                    quantityText.setText(String.valueOf(quantity));
+                }
+            }
+        });
+
+        increaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                quantity++;
+                quantityText.setText(String.valueOf(quantity));
+            }
+        });
     }
 }

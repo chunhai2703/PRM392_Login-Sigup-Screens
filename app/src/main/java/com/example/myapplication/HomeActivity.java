@@ -96,7 +96,6 @@ public class HomeActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Log.v("TAG", snapshot.toString());
-
                         String productName = snapshot.child("Name").getValue(String.class);
                         String image = snapshot.child("UrlImage").getValue(String.class);
                         if(image == null){
