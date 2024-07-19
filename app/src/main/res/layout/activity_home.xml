@@ -29,19 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/logout_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:backgroundTint="@color/orange"
-        android:text="Logout"
-        android:textColor="#FFFFFF"
-        android:padding="18dp"
-        android:textSize="18sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+
 
     <LinearLayout
         android:id="@+id/bottom_navigation"
@@ -100,6 +88,18 @@
             android:gravity="center"
             android:paddingTop="8dp"
             android:text="Lịch Sử"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            />
+        <Button
+            android:id="@+id/logout_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:drawableTop="@drawable/ic_logout"
+            android:gravity="center"
+            android:paddingTop="8dp"
+            android:textSize="12sp"
+            />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
