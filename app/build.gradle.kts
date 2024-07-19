@@ -45,6 +45,8 @@ dependencies {
     implementation(libs.converterGson)
     implementation(libs.firebase.database)
     implementation(libs.glide)
+    implementation(libs.compose.theme.adapter)
+    implementation(libs.google.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

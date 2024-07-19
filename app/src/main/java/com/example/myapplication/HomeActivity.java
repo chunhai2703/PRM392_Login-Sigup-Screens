@@ -1,7 +1,9 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
     private TextView welcomeTextView;
     private FirebaseAuth mAuth;
     private ApiService apiService;
+    private TextView viewCartButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +65,12 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-
     }
+    public void openCartLayout(View view) {
+        Intent intent = new Intent(this, CartActivity.class);
+        startActivity(intent);
+    }
+
     private void displaySuccessMessage(String message) {
         // Use a UI framework like Android's Toast or a custom dialog to display the success message
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
