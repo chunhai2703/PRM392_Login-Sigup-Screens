@@ -1,5 +1,6 @@
 package com.example.myapplication.src;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.opengl.GLES30;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.entity.ProductEntity;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
@@ -32,11 +34,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return new ProductViewHolder(itemView);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ProductAdapter.ProductViewHolder holder, int position) {
         ProductEntity currentCourse = productList.get(position);
         holder.courseName.setText(currentCourse.getName());
-        holder.coursePrice.setText(String.valueOf(currentCourse.getPrice()) + "$");
+
+        double price = currentCourse.getPrice();
+        DecimalFormat df = new DecimalFormat("0.000");
+        String formattedPrice = df.format(price);
+
+        holder.coursePrice.setText(formattedPrice + " đ");
         Glide.with(holder.itemView.getContext())
                 .load(Uri.parse(currentCourse.getUrlImage()))
                 .placeholder(R.drawable.error_image) // optional

@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -80,13 +81,25 @@ public class HomeActivity extends AppCompatActivity {
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        // Access individual products
-                        String productName = snapshot.child("name").getValue(String.class);
-                        String image = snapshot.child("image").getValue(String.class);
-                        listData.add(new ProductEntity(productName, "abc", 123, 12, "abc", 2345, "123", "https://cdn0.fahasa.com/media/catalog/product/9/9/999-l_-th_-g_i-cho-ch_nh-m_nh-_-t_-m_u-cu_c-s_ng.jpg"));
+                        Log.v("TAG", snapshot.toString());
+
+                        String productName = snapshot.child("Name").getValue(String.class);
+                        String image = snapshot.child("UrlImage").getValue(String.class);
+                        if(image == null){
+                            image = "https://dotrinh.com/wp-content/uploads/2019/01/loading_indicator.gif";
+                        }
+                        String price = snapshot.child("Price").getValue(String.class);
+                        double valuePrice = 0;
+                        if(price == null){
+                            valuePrice = 100;
+                        }else{
+                            valuePrice = Double.parseDouble(price);
+                        }
+
+                        listData.add(new ProductEntity(productName, "abc", valuePrice, 12, "abc", 2345, "123", image));
                     }
                     listener.onDataLoaded(listData);
                 }
