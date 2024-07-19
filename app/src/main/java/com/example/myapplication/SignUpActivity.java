@@ -22,27 +22,20 @@ public class SignUpActivity extends AppCompatActivity {
     Button signUp;
     TextView signIn;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-//        // Initialize the TextView for sign-in
-//        TextView signInTextView = findViewById(R.id.signin_textview);
-//        signInTextView.setOnClickListener(v -> {
-//            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-//            startActivity(intent);
-//        });
         editTextUsername = findViewById(R.id.username_input);
         editTextPassword = findViewById(R.id.password_input);
         signIn = findViewById(R.id.signin_textview);
         signUp = findViewById(R.id.signup_btn);
 
-        // Set up the sign-up click listener
-        signUp.setOnClickListener(v -> {
+        signIn.setOnClickListener(v -> {
             Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
             startActivity(intent);
-            finish();
         });
 
         signUp.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +53,9 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
-                firebaseAuth.createUserWithEmailAndPassword(username, password)
+                String hashedPassword = PasswordUtils.hashPassword(password);
+
+                firebaseAuth.createUserWithEmailAndPassword(username, hashedPassword)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
