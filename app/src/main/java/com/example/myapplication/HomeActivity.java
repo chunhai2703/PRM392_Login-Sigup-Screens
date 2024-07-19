@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
     private TextView welcomeTextView;
     private FirebaseAuth mAuth;
     private ApiService apiService;
+    private TextView viewCartButton;
 
     Button logoutBtn;
 
@@ -71,6 +73,7 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -78,12 +81,19 @@ public class HomeActivity extends AppCompatActivity {
         loadData(new OnDataLoadedListener() {
             @Override
             public void onDataLoaded(List<ProductEntity> list) {
-                ProductAdapter adapter = new ProductAdapter(list);
+                ProductAdapter adapter = new ProductAdapter(list,HomeActivity.this);
                 recyclerView.setAdapter(adapter);
             }
         });
 
-
+        viewCartButton = findViewById(R.id.cart_button);
+        viewCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+                startActivity(intent);
+            }
+        });
     }
     private void displaySuccessMessage(String message) {
         // Use a UI framework like Android's Toast or a custom dialog to display the success message
@@ -106,7 +116,6 @@ public class HomeActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Log.v("TAG", snapshot.toString());
-
                         String productName = snapshot.child("Name").getValue(String.class);
                         String image = snapshot.child("UrlImage").getValue(String.class);
                         if(image == null){

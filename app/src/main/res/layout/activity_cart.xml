@@ -5,40 +5,44 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    tools:context=".CartActivity">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/lavender"
+        android:gravity="center"
+        android:text="Your product"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@id/layoutofcartdetail"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
+
+
+    <LinearLayout
+        android:id="@+id/layoutofcartdetail"
+        android:layout_width="match_parent"
+        android:layout_height="540dp"
+        android:layout_margin="20dp"
+        android:layout_marginTop="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/textView">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/search_view"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <ListView
+            android:id="@+id/horizontal_recycler_view_cart_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/black"
+            android:dividerHeight="5dp"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/rvcart_item" />
 
-    <Button
-        android:id="@+id/logout_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:backgroundTint="@color/orange"
-        android:text="Logout"
-        android:textColor="#FFFFFF"
-        android:padding="18dp"
-        android:textSize="18sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/bottom_navigation"
@@ -96,7 +100,9 @@
             android:drawableTop="@drawable/ic_account"
             android:gravity="center"
             android:paddingTop="8dp"
-            android:text="Lịch Sử"
+            android:text="Tài Khoản"
             android:textSize="12sp" />
+
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

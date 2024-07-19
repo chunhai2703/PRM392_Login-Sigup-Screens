@@ -1,6 +1,8 @@
 package com.example.myapplication.src;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.opengl.GLES30;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import androidx.constraintlayout.widget.Guideline;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.myapplication.DetailProductActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.entity.ProductEntity;
 
@@ -22,9 +25,11 @@ import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
     private List<ProductEntity> productList = null;
+    private Context context;
 
-    public ProductAdapter(List<ProductEntity> courseList) {
+    public ProductAdapter(List<ProductEntity> courseList, Context context) {
         this.productList = courseList;
+        this.context = context;
     }
 
     @NonNull
@@ -50,6 +55,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 .placeholder(R.drawable.error_image) // optional
                 .error(R.drawable.error_image) // optional
                 .into(holder.courseImg);
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailProductActivity.class);
+            intent.putExtra("productName", currentCourse.getName());
+            intent.putExtra("productPrice", currentCourse.getPrice());
+            intent.putExtra("productImage", currentCourse.getUrlImage());
+            context.startActivity(intent);
+        });
+
     }
 
     @Override

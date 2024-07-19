@@ -13,6 +13,8 @@ recyclerView = "1.1.0"
 retrofit = "2.9.0"
 gson = "2.8.6"
 firebase = "21.0.0"
+composeThemeAdapter = "1.2.1"
+materialVersion = "1.13.0-alpha04"
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -28,6 +30,8 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 converterGson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version = "21.0.0" }
 glide = {group="com.github.bumptech.glide",name="glide",version="4.16.0"}
+compose-theme-adapter = { group = "com.google.android.material", name = "compose-theme-adapter", version.ref = "composeThemeAdapter" }
+google-material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
