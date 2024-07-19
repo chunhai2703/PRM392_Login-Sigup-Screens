@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,13 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.entity.ProductEntity;
 import com.example.myapplication.src.ApiService;
 import com.example.myapplication.src.ProductAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,11 +30,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class HomeActivity extends AppCompatActivity {
 
     private TextView welcomeTextView;
+
+    private Button homeButton, cartButton, accountButton, historyButton;
+
     private FirebaseAuth mAuth;
     private ApiService apiService;
     private TextView viewCartButton;
@@ -51,10 +47,12 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
 
         mAuth = FirebaseAuth.getInstance();
         // Initialize views
@@ -70,6 +68,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
+
         EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -78,6 +77,13 @@ public class HomeActivity extends AppCompatActivity {
         });
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        // Load data and set adapter after data is fetched
+        loadData(productList -> {
+            ProductAdapter adapter = new ProductAdapter(productList, HomeActivity.this);
+            recyclerView.setAdapter(adapter);
+
         loadData(new OnDataLoadedListener() {
             @Override
             public void onDataLoaded(List<ProductEntity> list) {
@@ -86,15 +92,29 @@ public class HomeActivity extends AppCompatActivity {
                 adapter = new ProductAdapter(list,HomeActivity.this);
                 recyclerView.setAdapter(adapter);
             }
+
         });
 
-        viewCartButton = findViewById(R.id.cart_button);
-        viewCartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, CartActivity.class);
-                startActivity(intent);
-            }
+        // Footer buttons setup
+        homeButton = findViewById(R.id.home_button);
+        cartButton = findViewById(R.id.cart_button);
+        accountButton = findViewById(R.id.account_button);
+        historyButton = findViewById(R.id.history_button);
+
+        homeButton.setOnClickListener(v -> {
+            Toast.makeText(HomeActivity.this, "Home", Toast.LENGTH_SHORT).show();
+        });
+
+        cartButton.setOnClickListener(v -> {
+            startActivity(new Intent(HomeActivity.this, CartActivity.class));
+        });
+
+        accountButton.setOnClickListener(v -> {
+            startActivity(new Intent(HomeActivity.this, AccountActivity.class));
+        });
+
+        historyButton.setOnClickListener(v -> {
+            startActivity(new Intent(HomeActivity.this, HistoryActivity.class));
         });
         SearchView searchView = findViewById(R.id.search_view);
 
@@ -123,13 +143,12 @@ public class HomeActivity extends AppCompatActivity {
         }
         adapter.updateList(filteredList);
     }
+
     private void displaySuccessMessage(String message) {
-        // Use a UI framework like Android's Toast or a custom dialog to display the success message
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void displayFailureMessage(String message) {
-        // Use a UI framework like Android's Toast or a custom dialog to display the failure message
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
@@ -143,12 +162,19 @@ public class HomeActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                        Log.d("HomeActivity", snapshot.toString());
+
+
                         String productName = snapshot.child("Name").getValue(String.class);
                         String image = snapshot.child("UrlImage").getValue(String.class);
-                        if(image == null){
+                        if (image == null) {
                             image = "https://dotrinh.com/wp-content/uploads/2019/01/loading_indicator.gif";
                         }
                         String price = snapshot.child("Price").getValue(String.class);
+
+                        double valuePrice = price == null ? 100 : Double.parseDouble(price);
+
                         double valuePrice = 0;
                         if(price == null){
                             valuePrice = 100;
@@ -161,9 +187,12 @@ public class HomeActivity extends AppCompatActivity {
 
                         int yearOfManufacture = snapshot.child("YearOfManufacture").getValue(Integer.class);
 
+
                         listData.add(new ProductEntity(productName, des, valuePrice, number, brand, yearOfManufacture, "123", image));
                     }
                     listener.onDataLoaded(listData);
+                } else {
+                    displayFailureMessage("No data available");
                 }
             }
 
@@ -173,9 +202,11 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
     interface OnDataLoadedListener {
-        void onDataLoaded(List<ProductEntity> courseList);
+        void onDataLoaded(List<ProductEntity> productList);
     }
+
     @Override
     protected void onRestart() {
         super.onRestart();

@@ -35,20 +35,20 @@ android {
 
 dependencies {
     implementation(libs.appcompat)
-    implementation(libs.material)
+    implementation(libs.material) // Ensure this is the correct one for Material Design
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
-    implementation(libs.recycler)
+    implementation(libs.recycler) // Should be androidx.recyclerview:recyclerview if this is RecyclerView
     implementation(libs.gson)
     implementation(libs.retrofit)
     implementation(libs.converterGson)
     implementation(libs.firebase.database)
     implementation(libs.glide)
-    implementation(libs.compose.theme.adapter)
-    implementation(libs.google.material)
+    implementation(libs.compose.theme.adapter) // Ensure this matches your Compose setup
+    implementation("androidx.core:core:1.10.0") // For NotificationCompat
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
 }
+

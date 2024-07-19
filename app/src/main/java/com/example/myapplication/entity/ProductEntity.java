@@ -12,13 +12,15 @@ public class ProductEntity {
     private int yearOfManufacture;
     private String category;
     private String urlImage;
-    // Constructors
+
+    // Default Constructor
     public ProductEntity() {
-        this.id = UUID.randomUUID().toString();  // Tạo GUID ngẫu nhiên cho id
+        this.id = UUID.randomUUID().toString();  // Generate a random UUID for id
     }
 
-    public ProductEntity(String name, String description, double price, int quantity, String brand, int yearOfManufacture, String category,String urlImage) {
-        this.id = id; // Tạo GUID ngẫu nhiên cho id
+    // Parameterized Constructor
+    public ProductEntity(String name, String description, double price, int quantity, String brand, int yearOfManufacture, String category, String urlImage) {
+        this.id = UUID.randomUUID().toString();  // Generate a random UUID for id
         this.name = name;
         this.description = description;
         this.price = price;
@@ -26,8 +28,9 @@ public class ProductEntity {
         this.brand = brand;
         this.yearOfManufacture = yearOfManufacture;
         this.category = category;
-        this.urlImage =urlImage;
+        this.urlImage = urlImage;
     }
+
     // Getters and Setters
     public String getId() {
         return id;
@@ -89,15 +92,15 @@ public class ProductEntity {
         return category;
     }
 
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public String getUrlImage() {
         return urlImage;
     }
 
     public void setUrlImage(String urlImage) {
         this.urlImage = urlImage;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 }
