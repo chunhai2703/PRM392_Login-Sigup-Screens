@@ -53,6 +53,7 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -60,17 +61,20 @@ public class HomeActivity extends AppCompatActivity {
         loadData(new OnDataLoadedListener() {
             @Override
             public void onDataLoaded(List<ProductEntity> list) {
-                ProductAdapter adapter = new ProductAdapter(list);
+                ProductAdapter adapter = new ProductAdapter(list,HomeActivity.this);
                 recyclerView.setAdapter(adapter);
             }
         });
 
+        viewCartButton = findViewById(R.id.cart_button);
+        viewCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+                startActivity(intent);
+            }
+        });
     }
-    public void openCartLayout(View view) {
-        Intent intent = new Intent(this, CartActivity.class);
-        startActivity(intent);
-    }
-
     private void displaySuccessMessage(String message) {
         // Use a UI framework like Android's Toast or a custom dialog to display the success message
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();

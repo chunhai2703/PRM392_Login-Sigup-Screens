@@ -28,6 +28,12 @@
         <activity android:name=".SignUpActivity"
             android:exported="false">
         </activity>
+        <activity android:name=".CartActivity"
+            android:exported="false">
+        </activity>
+        <activity android:name=".DetailProductActivity"
+            android:exported="false">
+        </activity>
     </application>
 
 </manifest>
