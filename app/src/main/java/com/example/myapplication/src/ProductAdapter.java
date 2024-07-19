@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.opengl.GLES30;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         this.productList = courseList;
         this.context = context;
     }
-
+    public void updateList(List<ProductEntity> newList) {
+        productList = newList;
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public ProductAdapter.ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -55,11 +59,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 .placeholder(R.drawable.error_image) // optional
                 .error(R.drawable.error_image) // optional
                 .into(holder.courseImg);
+        Log.v("TAGV", currentCourse.toString());
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailProductActivity.class);
             intent.putExtra("productName", currentCourse.getName());
             intent.putExtra("productPrice", currentCourse.getPrice());
             intent.putExtra("productImage", currentCourse.getUrlImage());
+            intent.putExtra("productDes", currentCourse.getDescription());
+            intent.putExtra("productQuantity", String.valueOf(currentCourse.getQuantity()));
+            intent.putExtra("productBrand", currentCourse.getBrand());
+            intent.putExtra("productYearOfManufacture", String.valueOf(currentCourse.getYearOfManufacture()));
+
             context.startActivity(intent);
         });
 

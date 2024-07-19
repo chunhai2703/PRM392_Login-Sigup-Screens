@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -42,26 +44,46 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ApiService apiService;
     private TextView viewCartButton;
+    private List<ProductEntity> listItem = new ArrayList<>();
+    private ProductAdapter adapter;
+
+    Button logoutBtn;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        mAuth = FirebaseAuth.getInstance();
+        // Initialize views
+        logoutBtn = findViewById(R.id.logout_btn);
+
+        // Set up the logout click listener
+        logoutBtn.setOnClickListener(v -> {
+            Log.d("Logout", "Logout button clicked");
+            mAuth.signOut();
+            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+
         EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Load data and set adapter after data is fetched
         loadData(new OnDataLoadedListener() {
             @Override
             public void onDataLoaded(List<ProductEntity> list) {
-                ProductAdapter adapter = new ProductAdapter(list,HomeActivity.this);
+                listItem.clear();
+                listItem = list;
+                adapter = new ProductAdapter(list,HomeActivity.this);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -74,6 +96,32 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        SearchView searchView = findViewById(R.id.search_view);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.v("TAGC", query);
+                filterList(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.v("TAGC", newText);
+                filterList(newText);
+                return true;
+            }
+        });
+    }
+    private void filterList(String query) {
+        List<ProductEntity> filteredList = new ArrayList<>();
+        for (ProductEntity product : listItem) {
+            if (product.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(product);
+            }
+        }
+        adapter.updateList(filteredList);
     }
     private void displaySuccessMessage(String message) {
         // Use a UI framework like Android's Toast or a custom dialog to display the success message
@@ -95,7 +143,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Log.v("TAG", snapshot.toString());
                         String productName = snapshot.child("Name").getValue(String.class);
                         String image = snapshot.child("UrlImage").getValue(String.class);
                         if(image == null){
@@ -108,8 +155,13 @@ public class HomeActivity extends AppCompatActivity {
                         }else{
                             valuePrice = Double.parseDouble(price);
                         }
+                        String des = snapshot.child("Description").getValue(String.class);
+                        int number = snapshot.child("Quantity").getValue(Integer.class);
+                        String brand = snapshot.child("Brand").getValue(String.class);
 
-                        listData.add(new ProductEntity(productName, "abc", valuePrice, 12, "abc", 2345, "123", image));
+                        int yearOfManufacture = snapshot.child("YearOfManufacture").getValue(Integer.class);
+
+                        listData.add(new ProductEntity(productName, des, valuePrice, number, brand, yearOfManufacture, "123", image));
                     }
                     listener.onDataLoaded(listData);
                 }
