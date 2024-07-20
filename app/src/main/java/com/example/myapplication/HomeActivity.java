@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
@@ -35,6 +37,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -113,7 +117,43 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             }
         });
+        // Set up filter buttons
+        Button filterByPriceAsc = findViewById(R.id.filter_btn1);
+        filterByPriceAsc.setOnClickListener(v -> sortByPriceAsc());
+
+        Button filterByPriceDesc = findViewById(R.id.filter_btn2);
+        filterByPriceDesc.setOnClickListener(v -> sortByPriceDesc());
+
+        Button filterByNameAsc = findViewById(R.id.filter_btn3);
+        filterByNameAsc.setOnClickListener(v -> sortByNameAsc());
+
+        Button filterByNameDesc = findViewById(R.id.filter_btn4);
+        filterByNameDesc.setOnClickListener(v -> sortByNameDesc());
     }
+    private void sortByPriceAsc() {
+        Collections.sort(listItem, Comparator.comparingDouble(ProductEntity::getPrice));
+        adapter.updateList(listItem);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void sortByPriceDesc() {
+        Collections.sort(listItem, Comparator.comparingDouble(ProductEntity::getPrice).reversed());
+        adapter.updateList(listItem);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void sortByNameAsc() {
+        Collections.sort(listItem, Comparator.comparing(ProductEntity::getName));
+        adapter.updateList(listItem);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void sortByNameDesc() {
+        Collections.sort(listItem, Comparator.comparing(ProductEntity::getName).reversed());
+        adapter.updateList(listItem);
+        adapter.notifyDataSetChanged();
+    }
+
     private void filterList(String query) {
         List<ProductEntity> filteredList = new ArrayList<>();
         for (ProductEntity product : listItem) {
