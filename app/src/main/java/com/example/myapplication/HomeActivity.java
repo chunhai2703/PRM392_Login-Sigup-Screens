@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.entity.ProductEntity;
 import com.example.myapplication.src.ApiService;
 import com.example.myapplication.src.ProductAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,22 +38,18 @@ public class HomeActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private ApiService apiService;
-    private TextView viewCartButton;
     private List<ProductEntity> listItem = new ArrayList<>();
     private ProductAdapter adapter;
 
     Button logoutBtn;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-
         mAuth = FirebaseAuth.getInstance();
+
         // Initialize views
         logoutBtn = findViewById(R.id.logout_btn);
 
@@ -67,32 +62,23 @@ public class HomeActivity extends AppCompatActivity {
             finish();
         });
 
-
-
         EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        adapter = new ProductAdapter(listItem, HomeActivity.this);
+        recyclerView.setAdapter(adapter);
 
         // Load data and set adapter after data is fetched
         loadData(productList -> {
-            ProductAdapter adapter = new ProductAdapter(productList, HomeActivity.this);
-            recyclerView.setAdapter(adapter);
-
-        loadData(new OnDataLoadedListener() {
-            @Override
-            public void onDataLoaded(List<ProductEntity> list) {
-                listItem.clear();
-                listItem = list;
-                adapter = new ProductAdapter(list,HomeActivity.this);
-                recyclerView.setAdapter(adapter);
-            }
-
+            listItem.clear();
+            listItem.addAll(productList);
+            adapter.notifyDataSetChanged();
         });
 
         // Footer buttons setup
@@ -116,6 +102,7 @@ public class HomeActivity extends AppCompatActivity {
         historyButton.setOnClickListener(v -> {
             startActivity(new Intent(HomeActivity.this, HistoryActivity.class));
         });
+
         SearchView searchView = findViewById(R.id.search_view);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -134,6 +121,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
     private void filterList(String query) {
         List<ProductEntity> filteredList = new ArrayList<>();
         for (ProductEntity product : listItem) {
@@ -165,7 +153,6 @@ public class HomeActivity extends AppCompatActivity {
 
                         Log.d("HomeActivity", snapshot.toString());
 
-
                         String productName = snapshot.child("Name").getValue(String.class);
                         String image = snapshot.child("UrlImage").getValue(String.class);
                         if (image == null) {
@@ -173,20 +160,17 @@ public class HomeActivity extends AppCompatActivity {
                         }
                         String price = snapshot.child("Price").getValue(String.class);
 
-                        double valuePrice = price == null ? 100 : Double.parseDouble(price);
-
-                        double valuePrice = 0;
-                        if(price == null){
+                        double valuePrice;
+                        if (price == null) {
                             valuePrice = 100;
-                        }else{
+                        } else {
                             valuePrice = Double.parseDouble(price);
                         }
+
                         String des = snapshot.child("Description").getValue(String.class);
                         int number = snapshot.child("Quantity").getValue(Integer.class);
                         String brand = snapshot.child("Brand").getValue(String.class);
-
                         int yearOfManufacture = snapshot.child("YearOfManufacture").getValue(Integer.class);
-
 
                         listData.add(new ProductEntity(productName, des, valuePrice, number, brand, yearOfManufacture, "123", image));
                     }
